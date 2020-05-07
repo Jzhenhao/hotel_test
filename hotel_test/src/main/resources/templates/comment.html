@@ -1,0 +1,88 @@
+<html  xmlns:th="http://www.thymeleaf.org" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>普通用户评价</title>
+    <script src="/js/common.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+</head>
+<body>
+<style>
+</style>
+<!--顶部导航栏-->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-5" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">普通用户-评价</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/'"><退></退>出
+            </a></p>
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/toBookinglist'">我的订单
+            </a></p>
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/toCommentlist'">查看酒店评价
+            </a></p>
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/index'">查询房间
+            </a></p>
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/toNearbyList'">周边
+            </a></p>
+        </div>
+    </div>
+</nav>
+<!--表单或表格-->
+<div class="container" id="app" style="background: #fafafa">
+
+    <div class="post">
+        <div class="form-group">
+            <input type="text" class="form-control"  v-model="content" required placeholder="评价内容">
+        </div>
+        <button  class="btn btn-primary  btn-block" v-on:click="comment()">评价</button>
+    </div>
+</div>
+<script th:inline="javascript">
+    var bookingID=[[${bookingID}]];
+    var app = new Vue({
+        el: '#app',
+        data: {
+            content: ''
+        },
+        methods: {
+            comment:function () {
+                var params={
+                    bookingID:bookingID,
+                    content:app.content
+                };
+                $.ajax({
+                    type : "post",
+                    url : "/user/addComment",
+                    data : params,
+                    success : function(data) {
+                        if(data.code==200){
+                            $(document).dialog({
+                                content: '评价成功',
+                            });
+                            setTimeout(function () {
+                                location.href="/toBookinglist";
+                            },1500)
+                        }
+                        else if(data.code==404){
+                            alert("失败");
+                        }
+                        else {
+                            alert("连接错误");
+                        }
+                    }
+                });
+            }
+        }
+    });
+
+</script>
+</body>
+</html>

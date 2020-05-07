@@ -1,0 +1,18 @@
+-------------------------------------------------------------------------------
+Test set: com.neo.produce.TestData
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.001 s <<< FAILURE! - in com.neo.produce.TestData
+createHouse1Data(com.neo.produce.TestData)  Time elapsed: 0 s  <<< ERROR!
+org.springframework.jdbc.BadSqlGrammarException: 
+
+### Error querying database.  Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'classtool.config_house' doesn't exist
+### The error may exist in com/neo/mapper/ConfigHouseMapper.java (best guess)
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT * FROM config_house
+### Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'classtool.config_house' doesn't exist
+; bad SQL grammar []; nested exception is com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'classtool.config_house' doesn't exist
+	at com.neo.produce.TestData.createHouse1Data(TestData.java:34)
+Caused by: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'classtool.config_house' doesn't exist
+	at com.neo.produce.TestData.createHouse1Data(TestData.java:34)
+

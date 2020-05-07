@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<header>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>编辑参数</title>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+</header>
+<style>
+    .navbar{
+        background: #d2edf4;
+        background-image: linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);
+    }
+</style>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-5" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">课堂应答系统</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
+            <p class="navbar-text navbar-right"> <a href="javascript:history.back(-1)">返回
+                <!--<span class="glyphicon glyphicon-arrow-left" style="font-size: 16px;color: #888;"></span>-->
+            </a></p>
+        </div>
+    </div>
+</nav>
+<body>
+<div class="container">
+    <form id="registerForm" onsubmit="return false">
+        <input th:value="${configHouse.id}" name="id" hidden>
+        <div class="form-group">
+            <label for="houseName">大大：</label><input th:value="${configHouse.houseName}" name="houseName" id="houseName" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="startTemperature">最低温度：</label><input th:value="${configHouse.startTemperature}" name="startTemperature" id="startTemperature" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="endTemperature">最高温度：</label><input th:value="${configHouse.endTemperature}" name="endTemperature" id="endTemperature" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="startHumidity">最低湿度：</label><input th:value="${configHouse.startHumidity}" name="startHumidity" id="startHumidity" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="endHumidity">最高湿度：</label><input th:value="${configHouse.endHumidity}" name="endHumidity" id="endHumidity" class="form-control">
+        </div>
+        <button onclick="submitConfig()" class="btn btn-default">submit</button>
+    </form>
+
+</div>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.js"></script>
+<script>
+    function submitConfig() {
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url:"/config/update",
+            data:$('#registerForm').serialize(),// 你的formid
+            async: false,
+            error: function(request) {
+                alert("Connection error");
+            },
+            success: function(data) {
+                    alert("操作成功！")
+                    location.href="/toCountdown";
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

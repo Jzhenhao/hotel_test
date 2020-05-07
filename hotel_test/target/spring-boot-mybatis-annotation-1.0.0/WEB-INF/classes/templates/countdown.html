@@ -1,0 +1,178 @@
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>任务列表</title>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<style>
+    .navbar{
+        background: #d2edf4;
+        background-image: linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);
+    }
+    .glyphicon {
+        color: #8590a6;
+    }
+</style>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-5" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">课堂应答系统</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
+            <p class="navbar-text navbar-right"> <a href="javascript:history.back(-1)">返回
+                <!--<span class="glyphicon glyphicon-arrow-left" style="font-size: 16px;color: #888;"></span>-->
+            </a></p>
+        </div>
+    </div>
+</nav>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.5.3/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/vue.resource/1.2.1/vue-resource.min.js"></script>
+<style>
+    /*   body{
+           background-color: #315481;
+           background-image: linear-gradient(to bottom, #315481, #918e82 100%);
+           !*position: relative;*!
+       }*/
+
+    .container{
+        max-width: 800px;
+        /*background: #d2edf4;*/
+        min-height: 100%;
+        /* background-image: linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);*/
+    }
+</style>
+<body >
+<div class="container" id="app" style="background: #fafafa">
+    <div class="table-responsive">
+    <table class="table table-condensed">
+        <thead>
+        <tr>
+            <th>大棚</th>
+            <th>低温度</th>
+            <th>高温度</th>
+            <th>低湿度</th>
+            <th>高湿度</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="item in items">
+           <!-- <th scope="row">1</th>-->
+            <th scope="row">{{ item.houseName }}</th>
+            <td>{{ item.startTemperature }}</td>
+            <td>{{ item.endTemperature }}</td>
+            <td>{{ item.startHumidity }}</td>
+            <td>{{ item.endHumidity }}</td>
+            <td><a v-bind:href="'/getConfig/'+item.id">修改</a></td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+<!--    <div class="post" v-for="item in items">
+
+        <div class="post-content">
+            <h3 > {{ item.greenHouseName }}
+                <small>
+                    <span class="label label-success" v-if="item.temperatureStatus==1">温度正常 </span>
+                    <span class="label label-danger" v-if="item.temperatureStatus==0">温度报警 </span>
+                    <span class="label label-success" v-if="item.humidityStatus==1">湿度正常 </span>
+                    <span class="label label-danger" v-if="item.humidityStatus==0"> 湿度报警 </span>
+                </small></h3>
+
+            <p class="inline" style="padding: 15px">
+            <li  class="glyphicon glyphicon-shopping-cart">温度：{{ item.temperature }}℃</li>
+            <span class="glyphicon glyphicon-calendar" aria-hidden="true" >湿度：{{ item.humidity }}</span>
+
+            <span class="glyphicon glyphicon-calendar" aria-hidden="true" >采集时间：{{ item.createTime }}</span>
+            </p>
+        </div>
+
+        <div class="hidden-md hidden-lg col-xs-12">
+            <a href="#" v-on:click="remove(item.id)" class="discuss">删除</a>
+        </div>
+    </div>-->
+    <div id="page" class="m-pagination" ></div>
+    <footer class="skill-ftw">
+        <ul class="fixed-skill-ftw">
+            <li class="skill-ftw-li">
+                <a href="/index" >
+                    <span class="skill-ftw-item jd-goods">大棚监控</span>
+                </a>
+            </li>
+            <li class="skill-ftw-li">
+                <a href="/toCountdown" >
+                    <span class="skill-ftw-item brand-goods active">报警参数</span>
+                </a>
+            </li>
+        </ul>
+    </footer>
+</div>
+<script>
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            items: [
+            ]
+        },
+        methods: {
+            remove: function (id) {
+                $.ajax({
+                    type : "delete",
+                    url : "/task/delTask/"+id,
+                    data : id,
+                    success : function(data) {
+                        location.reload();
+                    }
+                });
+            }
+        }
+    })
+    $(document).ready(function(){
+        //ajax提交
+        var params = $("#searchForm").serialize();
+        $.ajax({
+            type : "post",
+            url : "/config/getHouseConfigs",
+            data : params,
+            success : function(data) {
+                app.items=data;
+            }
+        });
+    })
+
+    function searchWithCondition() {
+        var greenHouseName=$('#greenHouseName').val();
+        var startTime=$('#startTime').val();
+        var endTime=$('#endTime').val();
+        var params={
+            greenHouseName:greenHouseName,
+            startTime:startTime,
+            endTime:endTime
+        };
+        $.ajax({
+            type : "post",
+            url : "/config/getHouseConfigs",
+            data : params,
+            success : function(data) {
+                app.items=data;
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

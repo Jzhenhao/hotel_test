@@ -1,0 +1,198 @@
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>dati</title>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+<style>
+    .navbar{
+        background: #d2edf4;
+        background-image: linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);
+    }
+    .glyphicon {
+        color: #8590a6;
+    }
+</style>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-5" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">课堂应答系统</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
+            <p class="navbar-text navbar-right"> <a href="javascript:history.back(-1)">返回
+                <!--<span class="glyphicon glyphicon-arrow-left" style="font-size: 16px;color: #888;"></span>-->
+            </a></p>
+        </div>
+    </div>
+</nav>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.5.3/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/vue.resource/1.2.1/vue-resource.min.js"></script>
+<style>
+ /*   body{
+        background-color: #315481;
+        background-image: linear-gradient(to bottom, #315481, #918e82 100%);
+        !*position: relative;*!
+    }*/
+
+    .container{
+        max-width: 800px;
+        /*background: #d2edf4;*/
+        min-height: 100%;
+        /* background-image: linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);*/
+    }
+</style>
+<body >
+<div class="container" id="app" style="background: #fafafa">
+
+    <div class="row " style="">
+    <form id="searchForm" class="form-inline" onsubmit="return false">
+        <div class="col-xs-6 col-md-2">
+         <input id="classNumber" class="form-control" placeholder="输入课堂编号">
+        </div>
+        <div class="col-xs-6 col-md-5" > <a class="btn btn-info"  href="#" onclick="searchWithCondition()">查询</a></div>
+    </form>
+        <br><br>
+</div>
+    <div class="post" v-for="item in items">
+        <div class="post-content" v-if="items.optiona">
+            <form   id="answerForm" onsubmit="return false">
+            <div class="testCon" data-type="1" data-answer="A">
+                <h4 class="jxz-title">{{items.description}}</h4>
+                <input  v-bind:value="items.id" name="questionId" hidden>
+                <div class="jxz-option radio">
+                    <label>
+                        <input name="answer" type="radio" v-model="picked" v-bind:value="items.optiona"> A：{{items.optiona}}
+                    </label>
+                </div>
+
+                <div class="jxz-option radio">
+                    <label>
+                        <input name="answer" type="radio" v-model="picked" v-bind:value="items.optionb"> B：{{items.optionb}}
+                    </label>
+                </div>
+
+                <div class="jxz-option radio" v-if="items.optionc">
+                    <label>
+                        <input name="answer" type="radio" v-model="picked" v-bind:value="items.optionc"> C：{{items.optionc}}
+                    </label>
+                </div>
+
+                <div class="jxz-option radio" v-if="items.optiond">
+                    <label>
+                        <input name="answer" type="radio" v-model="picked" v-bind:value="items.optiond"> D：{{items.optiond}}
+                    </label>
+                </div>
+
+                <div class="topic-answer">
+                    <p id="yourAnswer" >您的答案：<span class="userAnswer">{{picked}}</span></p>
+                    <p id="rightAnswer" hidden>正确答案：{{items.rightAnswer}}</p>
+                    <!--<p>解析：无</p>-->
+                </div>
+                <div>
+                    <button type="submit" v-on:click="postAnswer" id="submitAnswer">提交</button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+    <div id="page" class="m-pagination" ></div>
+    <footer class="skill-ftw">
+        <ul class="fixed-skill-ftw">
+            <li class="skill-ftw-li">
+                <a href="/index" >
+                    <span class="skill-ftw-item jd-goods active">
+                        <span class="glyphicon glyphicon-home" aria-hidden="true">答题</span>
+                    </span>
+                </a>
+            </li>
+            <li class="skill-ftw-li">
+                <a href="/toCountdown" >
+                    <span class="skill-ftw-item brand-goods ">
+                        <span class="glyphicon glyphicon-wrench" aria-hidden="true">签到</span>
+                    </span>
+                </a>
+            </li>
+        </ul>
+    </footer>
+</div>
+<script>
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            picked: '',
+            items: [
+            ]
+        },
+        methods: {
+            remove: function (id) {
+                $.ajax({
+                    type : "delete",
+                    url : "/task/delTask/"+id,
+                    data : id,
+                    success : function(data) {
+                        location.reload();
+                    }
+                });
+            },
+            postAnswer: function (event) {
+                var formData = $("#answerForm").serialize();
+                $.ajax({
+                    type : "post",
+                    url : "/answer/add",
+                    data : formData,
+                    success : function(data) {
+                        if (data.code==200){
+                            $("#rightAnswer").fadeIn();
+                            $("#submitAnswer").fadeOut();
+                            $("input[name='answer']").attr("disabled","disabled");
+                        }
+                    }
+                });
+            }
+        }
+    });
+    $(document).ready(function(){
+        //ajax提交
+        var params = $("#searchForm").serialize();
+        $.ajax({
+            type : "post",
+            url : "/offersign/getOffersigns",
+            data : params,
+            success : function(data) {
+                app.items=data;
+            }
+        });
+    })
+
+    function searchWithCondition() {
+        var classNumber=$('#classNumber').val();
+        var params={
+            classNumber:classNumber
+        };
+        $.ajax({
+            type : "post",
+            url : "/question/getQuestionByClassnumber",
+            data : params,
+            success : function(data) {
+                app.items=data;
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

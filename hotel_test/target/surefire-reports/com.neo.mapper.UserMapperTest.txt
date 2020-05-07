@@ -1,0 +1,46 @@
+-------------------------------------------------------------------------------
+Test set: com.neo.mapper.UserMapperTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 1.064 s <<< FAILURE! - in com.neo.mapper.UserMapperTest
+testQuery(com.neo.mapper.UserMapperTest)  Time elapsed: 1.032 s  <<< ERROR!
+org.springframework.jdbc.BadSqlGrammarException: 
+
+### Error querying database.  Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'classtool.users' doesn't exist
+### The error may exist in com/neo/mapper/UserMapper.java (best guess)
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT * FROM users
+### Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'classtool.users' doesn't exist
+; bad SQL grammar []; nested exception is com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'classtool.users' doesn't exist
+	at com.neo.mapper.UserMapperTest.testQuery(UserMapperTest.java:31)
+Caused by: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'classtool.users' doesn't exist
+	at com.neo.mapper.UserMapperTest.testQuery(UserMapperTest.java:31)
+
+testInsert(com.neo.mapper.UserMapperTest)  Time elapsed: 0.022 s  <<< ERROR!
+org.springframework.jdbc.BadSqlGrammarException: 
+
+### Error querying database.  Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'classtool.users' doesn't exist
+### The error may exist in com/neo/mapper/UserMapper.java (best guess)
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT * FROM users
+### Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'classtool.users' doesn't exist
+; bad SQL grammar []; nested exception is com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'classtool.users' doesn't exist
+	at com.neo.mapper.UserMapperTest.testInsert(UserMapperTest.java:26)
+Caused by: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'classtool.users' doesn't exist
+	at com.neo.mapper.UserMapperTest.testInsert(UserMapperTest.java:26)
+
+testUpdate(com.neo.mapper.UserMapperTest)  Time elapsed: 0.008 s  <<< ERROR!
+org.springframework.jdbc.BadSqlGrammarException: 
+
+### Error querying database.  Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'classtool.users' doesn't exist
+### The error may exist in com/neo/mapper/UserMapper.java (best guess)
+### The error may involve com.neo.mapper.UserMapper.getOne-Inline
+### The error occurred while setting parameters
+### SQL: SELECT * FROM users WHERE id = ?
+### Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'classtool.users' doesn't exist
+; bad SQL grammar []; nested exception is com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'classtool.users' doesn't exist
+	at com.neo.mapper.UserMapperTest.testUpdate(UserMapperTest.java:38)
+Caused by: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'classtool.users' doesn't exist
+	at com.neo.mapper.UserMapperTest.testUpdate(UserMapperTest.java:38)
+

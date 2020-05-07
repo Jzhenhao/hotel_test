@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en" >
+<head>
+    <meta charset="UTF-8"/>
+    <title>登录</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-5" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">课堂应答系统</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
+            <p class="navbar-text navbar-right"> <a  href="/user/logout">
+                <!--<span class="glyphicon glyphicon-arrow-left" style="font-size: 16px;color: #888;"></span>-->
+            </a></p>
+        </div>
+    </div>
+</nav>
+<div class="container">
+<form action="user/login" name="loginForm" id="loginForm" onsubmit="return false">
+          <div class="" id="login">
+              <div class="form-group">
+                  <label >用户名：</label>
+                  <input  class="form-control" name="userName" id="userName" type="text" required placeholder="用户名"/>
+              </div>
+              <div class="form-group">
+                  <label >密码：</label>
+                  <input class="form-control" name="passWord" id="passWord" type="password" required placeholder="密码"/>
+              </div>
+              <div class="form-group"> <input type="checkbox" name="remindMe">7天免登录
+              <a href="/toRegister">没有账号？注册</a>
+              </div>
+              <div class="form-group"> <button  class="btn btn-primary  btn-block" onclick="realLogin()">登录</button></div>
+
+          </div>
+      </form>
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    function realLogin(){
+        var data={
+            userName:$('#userName').val(),
+            passWord:$('#passWord').val()
+        };
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url:"/user/dologin",
+            data:data,
+            async: false,
+            error: function(request) {
+                alert("Connection error");
+            },
+            success: function(data) {
+                    if (data.code==200){
+                        if (data.userType == "1"){
+                            location.href="/index";
+                        }else{
+                            location.href="/teaacherindex";
+                        }
+
+                }else{
+                    alert(data.message);
+                }
+
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<html  xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>dati</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <script src="/js/common.js"></script>
+</head>
+<body>
+<style>
+</style>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-5" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">普通用户-我的订单</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/'">退出
+            </a></p>
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/toBookinglist'">我的订单
+            </a></p>
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/toCommentlist'">查看酒店评价
+            </a></p>
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/index'">查询房间
+            </a></p>
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/toNearbyList'">周边
+            </a></p>
+        </div>
+    </div>
+</nav>
+<div class="container" id="app" style="background: #fafafa">
+
+
+    <div class="post">
+        <table class="table table-hover">
+            <tr>
+                <td>订单号</td>
+                <td>房间号</td>
+                <td>房间类型</td>
+                <td>日期</td>
+                <td>状态</td>
+                <td>评价状态</td>
+                <td>操作</td>
+            </tr>
+            <tr v-for="(item, i) in items">
+                <td>{{item.bookingID}}</td>
+                <td>{{item.roomName}}</td>
+                <td>{{item.roomType}}</td>
+                <td>{{item.roomDate}}</td>
+                <td>{{item.roomState}}</td>
+                <td>{{item.commentState}}</td>
+                <td>
+                    <button class="btn btn-danger" v-on:click="comment(item.bookingID)" v-if="item.commentState=='未评价'&&item.roomState=='已退房'">评价</button>
+                    <button class="btn btn-danger" v-on:click="pay(item.roomID)" v-if="item.roomState=='未付款'">付款</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!--  </div>-->
+</div>
+<script>
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            picked: '',
+            items: [
+            ]
+        },
+        methods: {
+            comment:function (bookingID) {
+                location.href="/toComment?bookingID="+bookingID;
+            },
+            pay:function (roomID) {
+                var params={
+                    roomID:roomID
+                };
+                $.ajax({
+                    type : "post",
+                    url : "/user/pay",
+                    data : params,
+                    success : function(data) {
+                        if(data.code==200){
+                            $(document).dialog({
+                                content: '付款成功',
+                            });
+                            setTimeout(function () {
+                                location.reload();
+                            },1000)
+                        }
+                        else {
+                            $(document).dialog({
+                                content: '连接错误',
+                            });
+                        }
+                    }
+                });
+            }
+        }
+    });
+    $(document).ready(function(){
+        var params1=[]
+        $.ajax({
+            type : "post",
+            url : "/user/showBookingList",
+            data : params1,
+            success : function(data) {
+                app.items=data;
+            }
+        });
+    })
+</script>
+</body>
+</html>

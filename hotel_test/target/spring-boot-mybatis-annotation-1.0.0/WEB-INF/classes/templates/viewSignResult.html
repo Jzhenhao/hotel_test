@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.js"></script>
+    <title>问题详细</title>
+</head>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-5" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">课堂应答系统</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
+            <p class="navbar-text navbar-right"> <a href="javascript:history.back(-1)">返回
+                <!--<span class="glyphicon glyphicon-arrow-left" style="font-size: 16px;color: #888;"></span>-->
+            </a></p>
+        </div>
+    </div>
+</nav>
+<body>
+    <div class="container">
+        <div class="post">
+
+            <div class="post-content">
+                <form   id="answerForm" onsubmit="return false">
+                    <div class="testCon" data-type="1" data-answer="A">
+                        <h4 class="jxz-title">签到编码：<span th:text="${offersign.classNumber}"></span></h4>
+                        <div class="jxz-option radio">
+                            <label>
+                                 开始时间：
+                                <span th:text="${offersign.startTime}"></span>
+                            </label>
+
+                        </div>
+
+                        <div class="jxz-option radio">
+                            <label>
+                                 结束时间：
+                                <span th:text="${offersign.offsetTime}"></span>
+                            </label>
+                        </div>
+
+                        <div class="jxz-option radio" >
+                            <label>
+                                 发起人：
+                                <span th:text="${offersign.offerUserName}"></span>
+                            </label>
+                        </div>
+
+                    <!--    <div class="jxz-option radio" th:if="${not #lists.isEmpty(question.optiond)}">
+                            <label>
+                                <input name="answer" type="radio"  > D：
+                                <span th:text="${question.optiond}"></span>
+                            </label>
+                        </div>
+
+                        <div class="topic-answer">
+                            <p id="rightAnswer">正确答案：
+                                <span th:text="${question.rightAnswer}"></span>
+                                </p>
+                        </div>-->
+                        <div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <div>
+        <table class="table">
+            <thead>
+            <th>序号</th>
+            <th>姓名</th>
+            <th>签到时间</th>
+            </thead>
+            <tbody>
+            <tr th:each="m ,iterStat : ${signs}">
+                <th th:text="${iterStat.count}"></th>
+                <td th:text="${m.userName}"/>
+                <td th:text="${m.signTime}"/>
+            </tr>
+            </tbody>
+
+
+        </table>
+        </div>
+        <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+        <div id="main" >
+            <span>已签到：</span><span th:text="${signCount}"></span><span>人</span>
+        </div>
+        <footer class="skill-ftw">
+            <ul class="fixed-skill-ftw">
+                <li class="skill-ftw-li">
+                    <a href="/teaacherindex" >
+                    <span class="skill-ftw-item jd-goods active">
+                        <span class="glyphicon glyphicon-home" aria-hidden="true">出题</span>
+                    </span>
+                    </a>
+                </li>
+                <li class="skill-ftw-li">
+                    <a href="/toOfferSignindex" >
+                    <span class="skill-ftw-item brand-goods ">
+                        <span class="glyphicon glyphicon-wrench" aria-hidden="true">签到</span>
+                    </span>
+                    </a>
+                </li>
+            </ul>
+        </footer>
+    </div>
+
+    <script src="/js/echarts.common.min.js"></script>
+
+
+
+</body>
+</html>

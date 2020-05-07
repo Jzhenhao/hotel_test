@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<header>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>发起签到</title>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+</header>
+<style>
+    .navbar{
+        background: #d2edf4;
+        background-image: linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);
+    }
+</style>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-5" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">课堂应答系统</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
+            <p class="navbar-text navbar-right"> <a href="javascript:history.back(-1)">返回
+                <!--<span class="glyphicon glyphicon-arrow-left" style="font-size: 16px;color: #888;"></span>-->
+            </a></p>
+        </div>
+    </div>
+</nav>
+<body>
+<div class="container">
+    <form id="registerForm" onsubmit="return false">
+        <input  name="id" hidden>
+        <div class="form-group">
+            <label for="classNumber">签到编号：</label><input  name="classNumber" id="classNumber" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="startTime">签到开始时间：</label><input  name="startTime" id="startTime" class="form-control" type="datetime-local">
+        </div>
+        <div class="form-group">
+            <label for="offsetTime">签到结束时间</label><input  name="offsetTime" id="offsetTime" class="form-control" type="datetime-local">
+        </div>
+        <button onclick="submitConfig()" class="btn btn-default" style="width: 100%">submit</button>
+    </form>
+
+</div>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.js"></script>
+<script>
+    function submitConfig() {
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url:"/offersign/add",
+            data:$('#registerForm').serialize(),// 你的formid
+            async: false,
+            error: function(request) {
+                alert("Connection error");
+            },
+            success: function(data) {
+                if (data.code==403){
+                    alert(data.message)
+                    location.href="/";
+                }else if (data.code==200){
+                    alert(data.message)
+                    location.href="/toOfferSignindex";
+                }
+
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

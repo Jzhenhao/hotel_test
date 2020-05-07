@@ -1,0 +1,122 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>查看酒店评价</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <script src="/js/common.js"></script>
+    <script src="/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/js/bootstrap-datetimepicker.zh-CN.js"></script>
+    <link href="/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-5" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">普通用户-查看酒店评价</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/'">退出
+            </a></p>
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/toBookinglist'">我的订单
+            </a></p>
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/toCommentlist'">查看酒店评价
+            </a></p>
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/index'">查询房间
+            </a></p>
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/toNearbyList'">周边
+            </a></p>
+        </div>
+    </div>
+</nav>
+<div class="container" id="app" style="background: #fafafa">
+
+    <div class="post">
+        <table class="table table-hover">
+            <tr>
+                <td>用户名</td>
+                <td>房间类型</td>
+                <td>评价内容</td>
+                <td>评价时间</td>
+            </tr>
+            <tr v-for="(item, i) in items">
+                <td>{{item.userName}}</td>
+                <td>{{item.roomType}}</td>
+                <td>{{item.content}}</td>
+                <td>{{item.commentDate}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!--  </div>-->
+</div>
+<script>
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            roomDate: '',
+            items: [
+            ]
+        },
+        methods: {
+            booking:function (roomID) {
+                var params={
+                    roomID:roomID
+                };
+                $.ajax({
+                    type : "post",
+                    url : "/user/addBooking",
+                    data : params,
+                    success : function(data) {
+                        if (data.code==0){
+                            $(document).dialog({
+                                content: '您已经预订',
+                            });
+                            return false;
+                        }
+                        else if(data.code==200){
+                            $(document).dialog({
+                                content: '预订成功',
+                            });
+                            setTimeout(function () {
+                                $('#search').click();
+                            },1000)
+                        }
+                        else if(data.code==404){
+                            $(document).dialog({
+                                content: '失败',
+                            });
+                        }
+                        else {
+                            $(document).dialog({
+                                content: '连接错误',
+                            });
+                        }
+                    }
+                });
+            },
+
+        }
+    });
+    $(document).ready(function(){
+        var params1=[]
+        $.ajax({
+            type : "post",
+            url : "/user/showCommentList",
+            data : params1,
+            success : function(data) {
+                app.items=data;
+            }
+        });
+    })
+
+</script>
+</body>
+</html>

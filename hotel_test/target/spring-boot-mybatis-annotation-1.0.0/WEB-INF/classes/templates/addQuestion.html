@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<header>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>编辑参数</title>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+</header>
+<style>
+    .navbar{
+        background: #d2edf4;
+        background-image: linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);
+    }
+</style>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-5" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">课堂应答系统</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
+            <p class="navbar-text navbar-right"> <a href="javascript:history.back(-1)">返回
+                <!--<span class="glyphicon glyphicon-arrow-left" style="font-size: 16px;color: #888;"></span>-->
+            </a></p>
+        </div>
+    </div>
+</nav>
+<body>
+<div class="container">
+    <form id="registerForm" onsubmit="return false">
+        <div class="form-group">
+            <label for="description">描述：</label><input  name="description" id="description" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="startTemperature">类型：</label>
+            <select name="questionType" id="startTemperature" class="form-control" onchange="choosetype(this.options[this.options.selectedIndex].value)">
+                <option value="choose">选择题</option>
+                <option value="judge">判断题</option>
+            </select>
+        </div>
+        <div id="choose">
+        <div class="form-group">
+            <label for="optiona">第一个：</label><input  name="optiona" id="optiona" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="optionb">第二个：</label><input  name="optionb" id="optionb" class="form-control">
+        </div>
+        <div class="form-group" id="optioncc">
+            <label for="optionc">第三个：</label><input  name="optionc" id="optionc" class="form-control">
+        </div>
+        <div class="form-group" id="optiondd">
+            <label for="optiond">第四个：</label><input  name="optiond" id="optiond" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="rightAnswer">正确的：</label><input  name="rightAnswer" id="rightAnswer" class="form-control">
+        </div>
+        </div>
+<div id="judge" hidden>
+        <div class="form-group">
+            <label for="rightAnswer">选项1：</label>
+            <select name="optiona" class="form-control">
+                <option value="right">正确</option>
+                <option value="wrong">错误</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="rightAnswer">选项2：</label>
+            <select name="optionb" class="form-control">
+                <option value="right">正确</option>
+                <option value="wrong">错误</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="rightAnswer">正确选项：</label>
+            <select  name="rightAnswer" class="form-control">
+                <option value="right">正确</option>
+                <option value="wrong">错误</option>
+            </select>
+        </div>
+        </div>
+        <div class="form-group">
+            <label for="classNumber">编号：</label><input  name="classNumber" id="classNumber" class="form-control" placeholder="请记住这个，其他人查找用">
+        </div>
+        <input name="status" hidden id="status">
+        <button onclick="submitQuestion(1)" class="btn btn-default">发送</button>
+        <button onclick="submitQuestion(2)" class="btn btn-default">保存</button>
+    </form>
+
+</div>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.js"></script>
+<script>
+    function submitQuestion(status) {
+        $("#status").val(status);
+        var data=$('#registerForm').serialize();
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url:"/question/add",
+            data:data,// 你的formid
+            async: false,
+            error: function(request) {
+                alert("Connection error");
+            },
+            success: function(data) {
+                if (data.code==200){
+                    alert("操作成功！")
+                    location.href="/teaacherindex";
+                }else if(data.code==403){
+                    alert(data.message)
+                    location.href="/";
+                }
+
+            }
+        });
+    }
+function choosetype(data) {
+        if (data=="judge"){
+           $("#judge").fadeIn();
+            $("#choose").fadeOut();
+
+        }else{
+            $("#choose").fadeIn();
+            $("#judge").fadeOut();
+            $("#judge").attr("disabled", true);
+        }
+}
+</script>
+</body>
+</html>

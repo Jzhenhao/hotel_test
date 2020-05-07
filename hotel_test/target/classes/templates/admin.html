@@ -1,0 +1,164 @@
+<html  xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>酒店管理</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <script src="/js/common.js"></script>
+</head>
+<body>
+<style>
+</style>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-5" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">系统管理员-查看所有订单</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/'">退出
+            </a></p>
+        </div>
+    </div>
+</nav>
+<div class="container" id="app" style="background: #fafafa">
+
+
+    <div class="post">
+        <table class="table table-hover">
+            <tr>
+                <td>房间号</td>
+                <td>房间类型</td>
+                <td>用户编号</td>
+                <td>用户名称</td>
+                <td>日期</td>
+                <td>状态</td>
+                <td>评价状态</td>
+                <td>操作</td>
+            </tr>
+            <tr v-for="(item, i) in items">
+                <td>{{item.roomName}}</td>
+                <td>{{item.roomType}}</td>
+                <td>{{item.userID}}</td>
+                <td>{{item.userName}}</td>
+                <td>{{item.roomDate}}</td>
+                <td>{{item.roomState}}</td>
+                <td>{{item.commentState}}</td>
+                <td>
+                    <button class="btn btn-danger" v-on:click="live(item.roomID)" v-if="item.roomState=='已预订'">确认入住</button>
+                    <button class="btn btn-warning" v-on:click="recede(item.roomID)" v-if="item.roomState=='已入住'">确认退房</button>
+                    <button class="btn btn-warning" v-on:click="paySuccess(item.roomID)" v-if="item.roomState=='已付款'">确认预订</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!--  </div>-->
+</div>
+<script>
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            picked: '',
+            items: [
+            ]
+        },
+        methods: {
+            live:function (roomID) {
+                var params={
+                    roomID:roomID
+                };
+                $.ajax({
+                    type : "post",
+                    url : "/admin/live",
+                    data : params,
+                    success : function(data) {
+                        if(data.code==200){
+                            $(document).dialog({
+                                content: '确认入住成功',
+                            });
+                            setTimeout(function () {
+                                location.reload();
+                            },1000)
+                        }
+                        else {
+                            $(document).dialog({
+                                content: '连接错误',
+                            });
+                        }
+                    }
+                });
+            },
+            recede:function (roomID) {
+                var params={
+                    roomID:roomID
+                };
+                $.ajax({
+                    type : "post",
+                    url : "/admin/recede",
+                    data : params,
+                    success : function(data) {
+                        if(data.code==200){
+                            $(document).dialog({
+                                content: '退房成功',
+                            });
+                            setTimeout(function () {
+                                location.reload();
+                            },1000)
+                        }
+                        else {
+                            $(document).dialog({
+                                content: '连接错误',
+                            });
+                        }
+                    }
+                });
+            },
+            paySuccess:function (roomID) {
+                var params={
+                    roomID:roomID
+                };
+                $.ajax({
+                    type : "post",
+                    url : "/admin/paySuccess",
+                    data : params,
+                    success : function(data) {
+                        if(data.code==200){
+                            $(document).dialog({
+                                content: '确认付款成功',
+                            });
+                            setTimeout(function () {
+                                location.reload();
+                            },1000)
+                        }
+                        else {
+                            $(document).dialog({
+                                content: '连接错误',
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
+    });
+    $(document).ready(function(){
+        var params1=[]
+        $.ajax({
+            type : "post",
+            url : "/admin/showBookingAllList",
+            data : params1,
+            success : function(data) {
+                app.items=data;
+            }
+        });
+    })
+</script>
+</body>
+</html>

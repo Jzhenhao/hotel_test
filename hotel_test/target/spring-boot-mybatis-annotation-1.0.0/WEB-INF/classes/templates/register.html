@@ -1,0 +1,119 @@
+<html>
+<head>
+    <title>注册</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <style type="text/css">
+        /*body{
+            background-color: #315481;
+            background-image: linear-gradient(to bottom, #315481, #918e82 100%);
+            !*position: relative;*!
+        }*/
+        .glyphicon {
+            color: #337ab7;
+        }
+
+
+    </style>
+</head>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-5" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">课堂应答系统</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
+            <p class="navbar-text navbar-right"> <a  href="/user/logout">
+                <!--<span class="glyphicon glyphicon-arrow-left" style="font-size: 16px;color: #888;"></span>-->
+            </a></p>
+        </div>
+    </div>
+</nav>
+<body>
+<div class="container hello" style=";background-color: #fafafa;background-image: none" >
+        <div class="" >
+            <div class="shadow">
+                <form action="#" id="registerForm" name="registerForm" onsubmit="return false">
+                    <div class=" " id="register" >
+                        <div><strong id="errorMsg"  style="color: red;margin-left: 18px;"></strong></div>
+                        <div class="form-group">
+                            <label for="userName">手机：</label><input id="mobile" class="form-control" name="mobile"  maxlength="11" onblur="vailPhone()">
+                            <span class="error-account" id="error-mobile"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="userName">用户名：</label><input id="userName" class="form-control" name="userName" placeholder="zhangsan" maxlength="20" type="text" onblur="validateUserName()"required onkeydown="if(event.keyCode==32) return false">
+                            <span class="error-account" id="error-userName"></span>
+                        </div>
+                        <div class="form-group"><label for="passWord">密码：</label><input id="passWord"class="form-control" name="passWord"  maxlength="10" type="password" required onkeydown="if(event.keyCode==32) return false"></div>
+                        <div class="form-group">
+                            <label for="confirmPassWord">确认密码：</label><input id="confirmPassWord"class="form-control" maxlength="10"   name="confirmPassWord" type="password" onblur="validatePassword()" required onkeydown="if(event.keyCode==32) return false">
+                            <span class="error-account" id="error-passWord"></span>
+                        </div>
+                        <label>
+                            <input type="radio"name="sex"value="1" checked> 男
+                        </label>
+                        <label>
+                            <input type="radio" name="sex" value="0"> 女
+                        </label>
+                        <div class="form-group">
+                        <select name="userType" class="form-control">
+                            <option value="1">我是学生</option>
+                            <option value="2">我是老师</option>
+                        </select>
+                        </div>
+                    </div>
+                    <a href="/toLogin">有账号？去登录</a>
+                        <div class="form-group"><a  class="btn btn-primary  btn-block" onclick="registerUser()">注册</a></div>
+                        <br>
+
+                </form>
+
+            </div>
+
+        </div>
+
+</div>
+
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+    function registerUser(){
+            $.ajax({
+                cache: true,
+                type: "POST",
+                url:"/user/add",
+                data:$('#registerForm').serialize(),// 你的formid
+                async: false,
+                error: function(request) {
+                    alert("Connection error");
+                },
+                success: function(data) {
+                    debugger
+                    if (data.code==200){
+                        if (data.userType == "1"){
+                            location.href="/index";
+                        }else{
+                            location.href="/teaacherindex";
+                        }
+                    }else{
+                        alert(data.message);
+                    }
+
+                }
+            });
+
+
+    }
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,210 @@
+<html xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>酒店管理</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <script src="/js/common.js"></script>
+    <script src="/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/js/bootstrap-datetimepicker.zh-CN.js"></script>
+    <link href="/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-5" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">普通用户-查询房间</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-5">
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/'">退出
+            </a></p>
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/toBookinglist'">我的订单
+            </a></p>
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/toCommentlist'">查看酒店评价
+            </a></p>
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/index'">查询房间
+            </a></p>
+            <p class="navbar-text navbar-right"> <a href="javascript:location.href='/toNearbyList'">周边
+            </a></p>
+        </div>
+    </div>
+</nav>
+<div class="container" id="app" style="background: #fafafa">
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="起始时间" value="" id="datetimeStart" readonly>
+                <input type="text" class="form-control" placeholder="结束时间" value="" id="datetimeEnd" readonly>
+                <span class="input-group-btn">
+        <button class="btn btn-default" type="button" v-on:click="search()" id="search">查询</button>
+      </span>
+            </div><!-- /input-group -->
+        </div><!-- /.col-lg-6 -->
+    </div><!-- /.row -->
+    <div class="post">
+        <table class="table table-hover">
+            <tr>
+               <!-- <td>多选</td>-->
+                <td>房间号</td>
+                <td>房间类型</td>
+                <td>日期</td>
+                <td>价格</td>
+                <td>状态</td>
+                <td>操作</td>
+            </tr>
+            <tr v-for="(item, i) in items">
+              <td><input type="checkbox" name="roomID" v-bind:value="item.roomID" v-if="item.roomState=='未预订'"></td>
+                <td>{{item.roomName}}</td>
+                <td>{{item.roomType}}</td>
+                <td>{{item.roomDate}}</td>
+                <td>{{item.roomPrice}}</td>
+                <td>{{item.roomState}}</td>
+                <td>
+                    <button class="btn btn-danger" v-on:click="booking(item.roomID)" v-if="item.roomState=='未预订'">预订</button>
+                </td>
+            </tr>
+        </table>
+       <div class="form-group"> <button  class="btn btn-primary  btn-block" v-on:click="choose()">多选预订</button></div>
+    </div>
+
+    <!--  </div>-->
+</div>
+<script>
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            roomDate: '',
+            items: [
+            ]
+        },
+        methods: {
+            booking:function (roomID) {
+                var params={
+                    roomID:roomID
+                };
+                $.ajax({
+                    type : "post",
+                    url : "/user/addBooking",
+                    data : params,
+                    success : function(data) {
+                        if (data.code==0){
+                            $(document).dialog({
+                                content: '您已经预订',
+                            });
+                            return false;
+                        }
+                        else if(data.code==200){
+                            $(document).dialog({
+                                content: '预订成功',
+                            });
+                            setTimeout(function () {
+                                $('#search').click();
+                            },1000)
+                        }
+                        else if(data.code==404){
+                            $(document).dialog({
+                                content: '失败',
+                            });
+                        }
+                        else {
+                            $(document).dialog({
+                                content: '连接错误',
+                            });
+                        }
+                    }
+                });
+            },
+            search:function () {
+                var params={
+                    startDate:$('#datetimeStart').val(),
+                    endDate:$('#datetimeEnd').val()
+                };
+                $.ajax({
+                    type : "post",
+                    url : "/user/showRoomList",
+                    data : params,
+                    success : function(data) {
+                        app.items=data;
+                    }
+                });
+            },
+            choose:function () {
+                var a=$("input[type=checkbox]:checked").val();
+                if (a==""||a==null){
+                    $(document).dialog({
+                        content: '未选择任何房间，请重新选择',
+                    });
+                    return false;
+                }
+                var roomID = $("input[type=checkbox]:checked").map(function(index,elem) {
+                    return $(elem).val();
+                }).get().join(',');
+                var params={
+                    roomID:roomID
+                };
+                $.ajax({
+                    type : "post",
+                    url : "/user/checkbox",
+                    data : params,
+                    success : function(data) {
+                        if (data.code==0){
+                            $(document).dialog({
+                                content: '您已经预订',
+                            });
+                            return false;
+                        }
+                        else if(data.code==200){
+                            $(document).dialog({
+                                content: '预订成功',
+                            });
+                            setTimeout(function () {
+                                $('#search').click();
+                            },1000)
+                        }
+                        else if(data.code==404){
+                            $(document).dialog({
+                                content: '失败',
+                            });
+                        }
+                        else {
+                            $(document).dialog({
+                                content: '连接错误',
+                            });
+                        }
+                    }
+                });
+            }
+        }
+    });
+
+    $("#datetimeStart").datetimepicker({
+        format: 'yyyy-mm-dd',
+        minView:'month',
+        language: 'zh-CN',
+        autoclose:true,
+        startDate:new Date()
+    }).on("click",function(){
+        $("#datetimeStart").datetimepicker("setEndDate",$("#datetimeEnd").val())
+    });
+    $("#datetimeEnd").datetimepicker({
+        format: 'yyyy-mm-dd',
+        minView:'month',
+        language: 'zh-CN',
+        autoclose:true,
+        startDate:new Date()
+    }).on("click",function(){
+        $("#datetimeEnd").datetimepicker("setStartDate",$("#datetimeStart").val())
+    });
+
+
+</script>
+</body>
+</html>
